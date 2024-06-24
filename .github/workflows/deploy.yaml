@@ -18,6 +18,7 @@ jobs:
             cd gym
             git fetch
             git checkout ${{ github.ref_name }}
+            ./mvnw package
             docker-compose -f docker-compose.yaml up -d --build
             cd ..
             rm -rf gym/
