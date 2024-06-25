@@ -1,39 +1,31 @@
 package com.will.gym.resources;
 
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.Set;
+import java.util.List;
 
 import com.will.gym.domain.Fruit;
-import jakarta.ws.rs.DELETE;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.POST;
-import jakarta.ws.rs.Path;
+import com.will.gym.repositories.FruitRepository;
+import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
+import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.MediaType;
 
 @Path("/fruits")
 public class FruitResource {
 
-    private Set<Fruit> fruits = Collections.newSetFromMap(Collections.synchronizedMap(new LinkedHashMap<>()));
 
-    public FruitResource() {
-        fruits.add(new Fruit("Apple", "Winter fruit"));
-        fruits.add(new Fruit("Pineapple", "Tropical fruit"));
-    }
+    @Inject
+    FruitRepository repository;
 
     @GET
-    public Set<Fruit> list() {
-        return fruits;
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<Fruit> list() {
+        return repository.listAll();
     }
 
     @POST
-    public Set<Fruit> add(Fruit fruit) {
-        fruits.add(fruit);
-        return fruits;
-    }
-
-    @DELETE
-    public Set<Fruit> delete(Fruit fruit) {
-        fruits.removeIf(existingFruit -> existingFruit.name.contentEquals(fruit.name));
-        return fruits;
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Transactional
+    public void add(Fruit fruit) {
+        repository.persist(fruit);
     }
 }
