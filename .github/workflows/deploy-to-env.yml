@@ -1,0 +1,90 @@
+name: '[1] Build & Deploy for Env'
+run-name: Deploy for ${{ inputs.DEPLOY_TO }} - branch ${{ github.ref_name }} by @${{ github.actor }}
+
+on:
+  workflow_dispatch:
+    inputs:
+      RUN_TESTS:
+        description: "Run unit and integration tests?"
+        required: false
+        default: true
+        type: boolean
+
+jobs:
+
+  validate-image-existence:
+    runs-on: ubuntu-latest
+    name: Check if image already exists in ECR
+    outputs:
+      image_tag: ${{ steps.image-tag-exists.outputs.image_tag }}
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v3
+
+      - name: Environment variables setup
+        uses: ./.github/actions/setup/environment-variables
+
+      - name: Generate image tag
+        uses: ./.github/actions/git/tag-from-branch
+        with:
+          app_version: ${{ env.APP_VERSION }}
+
+      - name: Set image tag as output
+        id: image-tag-exists
+        run: |
+          echo "image_tag=$IMAGE_TAG" >> $GITHUB_OUTPUT
+
+  build-package-and-docker:
+    needs: validate-image-existence
+    runs-on: ubuntu-latest
+    name: Package application and build docker image
+    outputs:
+      image_tag: ${{ steps.image-tag.outputs.image_tag }}
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v3
+
+      - name: Environment variables setup
+        uses: ./.github/actions/setup/environment-variables
+
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: ${{ env.JAVA_DISTRIBUTION }}
+          cache: "maven"
+
+      - name: Compile Code
+        run: mvn clean package -Dapp.final.name=gym -DskipTests=${{ !inputs.RUN_TESTS }}
+
+      - name: Build Docker image
+        uses: ./.github/actions/docker/build
+        with:
+          tag: ${{ needs.validate-image-existence.outputs.image_tag }}
+
+      - name: Push image to ECR
+        uses: ./.github/actions/docker/push
+        with:
+          image_tag: ${{ needs.validate-image-existence.outputs.image_tag }}
+          host: ${{ secrets.UBUNTU_SERVER_HOST }}
+          username: ${{ secrets.UBUNTU_SERVER_USERNAME }}
+          port: ${{ secrets.UBUNTU_SERVER_PORT }}
+          private_key: ${{ secrets.UBUNTU_PRIVATE_KEY }}
+          public_key: ${{ secrets.UBUNTU_PUBLIC_KEY }}
+
+  deploy:
+    needs: [validate-image-existence,build-package-and-docker]
+    if: |
+      always() &&
+      needs.validate-image-existence.result == 'success' &&
+      (needs.build-package-and-docker.result == 'success' || needs.build-package-and-docker.result == 'skipped')
+    runs-on: ubuntu-latest
+    name: Deploy to Ubuntu Server
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v3
+
+      - name: Environment variables setup
+        uses: ./.github/actions/setup/environment-variables
+
+#      - name: Deploy
