@@ -1,0 +1,68 @@
+#docker save <my_image> | ssh -C user@my.remote.host.com docker load
+#
+#https://stackoverflow.com/questions/31575546/docker-image-push-over-ssh-distributed
+
+name: "Push Image to Ubuntu Server"
+description: "Push Image to Ubuntu Server"
+
+inputs:
+  IMAGE_TAG:
+    required: true
+    description: "Docker image tag"
+  HOST:
+    required: true
+    description: "Ubuntu Server Host"
+  USERNAME:
+    required: true
+    description: "Ubuntu Server Username"
+  PORT:
+    required: true
+    description: "Ubuntu Server Host"
+  PUBLIC_KEY:
+    required: true
+    description: "Ubuntu Server Public Key"
+  PRIVATE_KEY:
+    required: true
+    description: "Ubuntu Server Private Key"
+
+runs:
+  using: "composite"
+  steps:
+    - name: List images
+      shell: bash
+      run: |
+        docker image ls
+
+    - uses: actions/checkout@v4
+
+    - name: Setup SSH Key
+      uses: webfactory/ssh-agent@v0.9.0
+      with:
+        ssh-private-key: ${{ inputs.PRIVATE_KEY }}
+
+    #    - name: executing remote ssh commands using password
+    #      uses: appleboy/ssh-action@master
+    #      with:
+    #        host: ${{ inputs.HOST }}
+    #        username: ${{ inputs.USERNAME }}
+    #        key: ${{ inputs.PRIVATE_KEY }}
+    #        port: ${{ inputs.PORT }}
+    #        script: |
+    #          cd projects
+    #          docker save ${{ inputs.IMAGE_TAG }}  docker load
+    #          git clone git@github.com:WilsonGodoi/gym.git
+    #          cd gym
+    #          git fetch
+    #          git checkout ${{ github.ref_name }}
+    #          ./mvnw package
+    #          docker-compose -f docker-compose.yaml up -d --build
+    #          cd ..
+    #          rm -rf gym/
+
+    - name: Push Image
+      shell: bash
+      run: |
+        docker image ls
+        echo ${{ inputs.IMAGE_TAG }}
+        docker run -d ${{ inputs.IMAGE_TAG }}
+    # docker save ${{ inputs.IMAGE_TAG }}  docker load

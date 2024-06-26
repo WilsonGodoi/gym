@@ -1,0 +1,14 @@
+name: "Setup environment variables"
+description: "Setup environment variables"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Setup Envs
+      shell: bash
+      run: |
+        echo "::group::Global variables"
+        echo "APP_VERSION=1.0.0" >> $GITHUB_ENV
+        echo "JAVA_DISTRIBUTION=zulu" >> $GITHUB_ENV
+        echo "JAVA_VERSION=17" >> $GITHUB_ENV
+        echo "::endgroup::"

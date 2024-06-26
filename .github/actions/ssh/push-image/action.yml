@@ -1,0 +1,37 @@
+name: "Push image to Ubuntu Server"
+description: "Push image to Ubuntu Server"
+
+inputs:
+  UBUNTU_SERVER_HOST:
+    required: true
+    description: "Ubuntu Server Host"
+  UBUNTU_SERVER_USERNAME:
+    required: true
+    description: "Ubuntu Server Username"
+  UBUNTU_SERVER_PASSWORD:
+    required: true
+    description: "Ubuntu Server Password"
+  UBUNTU_SERVER_PORT:
+    required: true
+    description: "Ubuntu Server Port"
+
+runs:
+  using: "composite"
+  steps:
+    - name: executing remote ssh commands using password
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ inputs.UBUNTU_SERVER_HOST }}
+        username: ${{ inputs.UBUNTU_SERVER_USERNAME }}
+        password: ${{ inputs.UBUNTU_SERVER_PASSWORD }}
+        port: ${{ inputs.UBUNTU_SERVER_PORT }}
+        script: |
+          cd projects
+          git clone git@github.com:WilsonGodoi/gym.git
+          cd gym
+          git fetch
+          git checkout ${{ github.ref_name }}
+          ./mvnw package
+          docker-compose -f docker-compose.yaml up -d --build
+          cd ..
+          rm -rf gym/

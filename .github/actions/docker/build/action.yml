@@ -1,0 +1,24 @@
+name: "Build docker image from Dockerfile"
+description: "Build docker image from Dockerfile"
+
+inputs:
+  TAG:
+    required: true
+    description: "Image tag"
+  DOCKERFILE:
+    default: Dockerfile
+    description: "Dockerfile name"
+  CONTEXT:
+    default: .
+    description: "Build context"
+  BUILD_ARGS:
+    default: ""
+    description: "Build args"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Build Image
+      shell: bash --noprofile --norc -exo pipefail {0}
+      run: |
+        docker build ${{ inputs.BUILD_ARGS }} -t ${{ inputs.TAG }} -f ${{ inputs.DOCKERFILE }} ${{ inputs.CONTEXT }}
