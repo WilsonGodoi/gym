@@ -1,4 +1,4 @@
-name: '[1] Build & Deploy for Env'
+name: "[1] Build & Deploy for Env"
 run-name: Deploy for ${{ inputs.DEPLOY_TO }} - branch ${{ github.ref_name }} by @${{ github.actor }}
 
 on:
@@ -11,7 +11,6 @@ on:
         type: boolean
 
 jobs:
-
   validate-image-existence:
     runs-on: ubuntu-latest
     name: Check if image already exists in ECR
@@ -66,14 +65,15 @@ jobs:
         uses: ./.github/actions/docker/push
         with:
           image_tag: ${{ needs.validate-image-existence.outputs.image_tag }}
-          host: ${{ secrets.UBUNTU_SERVER_HOST }}
+          host: ${{ vars.UBUNTU_SERVER_HOST_VAR }}
           username: ${{ secrets.UBUNTU_SERVER_USERNAME }}
+          password: ${{ secrets.UBUNTU_SERVER_PASSWORD }}
           port: ${{ secrets.UBUNTU_SERVER_PORT }}
           private_key: ${{ secrets.UBUNTU_PRIVATE_KEY }}
           public_key: ${{ secrets.UBUNTU_PUBLIC_KEY }}
 
   deploy:
-    needs: [validate-image-existence,build-package-and-docker]
+    needs: [validate-image-existence, build-package-and-docker]
     if: |
       always() &&
       needs.validate-image-existence.result == 'success' &&
@@ -86,5 +86,4 @@ jobs:
 
       - name: Environment variables setup
         uses: ./.github/actions/setup/environment-variables
-
 #      - name: Deploy
