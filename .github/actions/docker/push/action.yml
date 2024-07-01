@@ -15,6 +15,9 @@ inputs:
   USERNAME:
     required: true
     description: "Ubuntu Server Username"
+  PASSWORD:
+    required: true
+    description: "Ubuntu Server Password"
   PORT:
     required: true
     description: "Ubuntu Server Host"
@@ -28,41 +31,31 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: List images
-      shell: bash
-      run: |
-        docker image ls
-
     - uses: actions/checkout@v4
 
-    - name: Setup SSH Key
-      uses: webfactory/ssh-agent@v0.9.0
-      with:
-        ssh-private-key: ${{ inputs.PRIVATE_KEY }}
-
-    #    - name: executing remote ssh commands using password
-    #      uses: appleboy/ssh-action@master
-    #      with:
-    #        host: ${{ inputs.HOST }}
-    #        username: ${{ inputs.USERNAME }}
-    #        key: ${{ inputs.PRIVATE_KEY }}
-    #        port: ${{ inputs.PORT }}
-    #        script: |
-    #          cd projects
-    #          docker save ${{ inputs.IMAGE_TAG }}  docker load
-    #          git clone git@github.com:WilsonGodoi/gym.git
-    #          cd gym
-    #          git fetch
-    #          git checkout ${{ github.ref_name }}
-    #          ./mvnw package
-    #          docker-compose -f docker-compose.yaml up -d --build
-    #          cd ..
-    #          rm -rf gym/
-
-    - name: Push Image
+    - name: Save Docker Image
       shell: bash
       run: |
-        docker image ls
-        echo ${{ inputs.IMAGE_TAG }}
-        docker run -d ${{ inputs.IMAGE_TAG }}
-    # docker save ${{ inputs.IMAGE_TAG }}  docker load
+        docker save -o ${{ inputs.IMAGE_TAG }}.tar ${{ inputs.IMAGE_TAG }}:latest
+        chmod -R 755 /home/runner/work/gym/gym
+
+    - name: Copy Docker Image
+      uses: appleboy/scp-action@v0.1.7
+      with:
+        host: ${{ inputs.HOST }}
+        username: ${{ inputs.USERNAME }}
+        password: ${{ inputs.PASSWORD }}
+        port: ${{ inputs.PORT }}
+        source: "${{ inputs.IMAGE_TAG }}.tar"
+        target: ~/projects
+
+    - name: Load Docker Image
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ inputs.HOST }}
+        username: ${{ inputs.USERNAME }}
+        password: ${{ inputs.PASSWORD }}
+        port: ${{ inputs.PORT }}
+        script: |
+          cd projects
+          docker load < ${{ inputs.IMAGE_TAG }}.tar

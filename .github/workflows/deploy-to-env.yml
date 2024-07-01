@@ -1,4 +1,4 @@
-name: '[1] Build & Deploy for Env'
+name: "[1] Build & Deploy for Env"
 run-name: Deploy for ${{ inputs.DEPLOY_TO }} - branch ${{ github.ref_name }} by @${{ github.actor }}
 
 on:
@@ -11,7 +11,6 @@ on:
         type: boolean
 
 jobs:
-
   validate-image-existence:
     runs-on: ubuntu-latest
     name: Check if image already exists in ECR
@@ -60,7 +59,9 @@ jobs:
       - name: Build Docker image
         uses: ./.github/actions/docker/build
         with:
+          dockerfile: ./src/main/docker/Dockerfile.jvm
           tag: ${{ needs.validate-image-existence.outputs.image_tag }}
+          build_args: "--build-arg QUARKUS_DATASOURCE_JDBC_URL=jdbc:postgresql://postgres:5432/gym_db --build-arg QUARKUS_DATASOURCE_USERNAME=user_dummy --build-arg QUARKUS_DATASOURCE_PASSWORD=password_dummy"
 
       - name: Push image to ECR
         uses: ./.github/actions/docker/push
@@ -68,12 +69,13 @@ jobs:
           image_tag: ${{ needs.validate-image-existence.outputs.image_tag }}
           host: ${{ secrets.UBUNTU_SERVER_HOST }}
           username: ${{ secrets.UBUNTU_SERVER_USERNAME }}
+          password: ${{ secrets.UBUNTU_SERVER_PASSWORD }}
           port: ${{ secrets.UBUNTU_SERVER_PORT }}
           private_key: ${{ secrets.UBUNTU_PRIVATE_KEY }}
           public_key: ${{ secrets.UBUNTU_PUBLIC_KEY }}
 
   deploy:
-    needs: [validate-image-existence,build-package-and-docker]
+    needs: [validate-image-existence, build-package-and-docker]
     if: |
       always() &&
       needs.validate-image-existence.result == 'success' &&
@@ -86,5 +88,4 @@ jobs:
 
       - name: Environment variables setup
         uses: ./.github/actions/setup/environment-variables
-
 #      - name: Deploy

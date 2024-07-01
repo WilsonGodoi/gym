@@ -6,7 +6,7 @@ inputs:
     required: true
     description: "Image tag"
   DOCKERFILE:
-    default: Dockerfile
+    default: "Dockerfile"
     description: "Dockerfile name"
   CONTEXT:
     default: .
