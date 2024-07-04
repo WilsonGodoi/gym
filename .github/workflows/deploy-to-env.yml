@@ -86,6 +86,11 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v3
 
-      - name: Environment variables setup
-        uses: ./.github/actions/setup/environment-variables
-#      - name: Deploy
+      - name: Deploy image to Ubuntu Server
+        uses: ./.github/actions/docker/deploy
+        with:
+          image_tag: ${{ needs.validate-image-existence.outputs.image_tag }}
+          host: ${{ secrets.UBUNTU_SERVER_HOST }}
+          username: ${{ secrets.UBUNTU_SERVER_USERNAME }}
+          password: ${{ secrets.UBUNTU_SERVER_PASSWORD }}
+          port: ${{ secrets.UBUNTU_SERVER_PORT }}

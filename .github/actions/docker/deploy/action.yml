@@ -1,0 +1,39 @@
+#docker save <my_image> | ssh -C user@my.remote.host.com docker load
+#
+#https://stackoverflow.com/questions/31575546/docker-image-push-over-ssh-distributed
+
+name: "Deploy Image to Ubuntu Server"
+description: "Deploy Image to Ubuntu Server"
+
+inputs:
+  IMAGE_TAG:
+    required: true
+    description: "Docker image tag"
+  HOST:
+    required: true
+    description: "Ubuntu Server Host"
+  USERNAME:
+    required: true
+    description: "Ubuntu Server Username"
+  PASSWORD:
+    required: true
+    description: "Ubuntu Server Password"
+  PORT:
+    required: true
+    description: "Ubuntu Server Host"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Deploy Docker Image
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ inputs.HOST }}
+        username: ${{ inputs.USERNAME }}
+        password: ${{ inputs.PASSWORD }}
+        port: ${{ inputs.PORT }}
+        script: |
+          docker stop gym-api
+          docker remove gym-api
+          docker run --net=gym-network -p 8080:8080 --name=gym-api -d ${{ inputs.IMAGE_TAG }}
+          docker image prune -a -f
