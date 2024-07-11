@@ -26,6 +26,7 @@ public class FruitResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Transactional
     public void add(Fruit fruit) {
+
         repository.persist(fruit);
     }
 }
