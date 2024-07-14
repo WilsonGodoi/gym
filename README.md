@@ -50,3 +50,5 @@ If you want to learn more about building native executables, please consult http
 ## Related Guides
 
 - REST Jackson ([guide](https://quarkus.io/guides/rest#json-serialisation)): Jackson serialization support for Quarkus REST. This extension is not compatible with the quarkus-resteasy extension, or any of the extensions that depend on it
+
+https://quarkus.io/guides/security-jwt
