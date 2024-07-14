@@ -9,6 +9,7 @@ import com.will.gym.utils.exceptions.BusinessException;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.PersistenceException;
+import org.eclipse.microprofile.jwt.JsonWebToken;
 
 import static com.will.gym.utils.logging.LogErrorId.CONFIRMATION_PASSWORD_ERROR;
 import static com.will.gym.utils.logging.LogErrorId.PERSISTENCE_ERROR;
@@ -22,6 +23,9 @@ public class CreateUserService {
     @Inject
     UserRepository userRepository;
 
+    @Inject
+    JsonWebToken jwt;
+
     public UserCreatedDTO createUser(CreateUserDTO createUserDTO) {
         if (createUserDTO.getConfirmationPassword() == null || !createUserDTO.getConfirmationPassword().equals(createUserDTO.getPassword())) {
             throw new BusinessException(CONFIRMATION_PASSWORD_ERROR.getCode(),
@@ -34,6 +38,11 @@ public class CreateUserService {
             throw new BusinessException(PERSISTENCE_ERROR.getCode(),
                     String.format(PERSISTENCE_ERROR.getDescription(), createUserDTO.getEmail(), createUserDTO.getFirstName()));
         }
+        return mapper.map(user);
+    }
+
+    public UserCreatedDTO getUser() {
+        User user = userRepository.find("email", jwt.getSubject()).firstResult();
         return mapper.map(user);
     }
 }
