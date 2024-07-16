@@ -3,7 +3,10 @@ package com.will.gym.mappers;
 import com.will.gym.domain.User;
 import com.will.gym.services.dto.CreateUserDTO;
 import com.will.gym.services.dto.UserCreatedDTO;
-import org.mapstruct.*;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.NullValueCheckStrategy;
+import org.mapstruct.ReportingPolicy;
 
 import java.time.ZoneId;
 
