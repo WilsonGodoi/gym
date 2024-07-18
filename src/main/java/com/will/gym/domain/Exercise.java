@@ -9,16 +9,14 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Entity
-@Table(name = "users")
-public class User extends PanacheEntityBase {
+@Table(name = "exercise")
+public class Exercise extends PanacheEntityBase {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String firstName;
-
-    private String lastName;
-    private String password;
+    @Enumerated(EnumType.STRING)
+    private ExerciseGroupType exerciseGroupType;
 
     @Email
     private String email;

@@ -6,4 +6,6 @@ import lombok.Data;
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ExerciseCreatedDTO {
+    private Long id;
+    private String exerciseGroupType;
 }
