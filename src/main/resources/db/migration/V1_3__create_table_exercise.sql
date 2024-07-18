@@ -5,5 +5,6 @@ CREATE TABLE exercise
     exerciseType VARCHAR(15) NOT NULL,
     exerciseGroupType VARCHAR(15) NOT NULL,
     FOREIGN KEY (email) REFERENCES users (email),
+    FOREIGN KEY (exerciseType) REFERENCES exercise_type (type),
     FOREIGN KEY (exerciseGroupType) REFERENCES exercise_group_type (type)
 );

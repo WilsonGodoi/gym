@@ -18,6 +18,7 @@ public class Exercise extends PanacheEntityBase {
     @Enumerated(EnumType.STRING)
     private ExerciseGroupType exerciseGroupType;
 
+    @Enumerated(EnumType.STRING)
     private ExerciseType exerciseType;
 
     @Email
