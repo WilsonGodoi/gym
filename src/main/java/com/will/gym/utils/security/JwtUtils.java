@@ -7,7 +7,7 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 @ApplicationScoped
 public class JwtUtils {
 
-    @ConfigProperty(name = "JWT_ISSUER")
+    @ConfigProperty(name = "mp.jwt.verify.issuer")
     String jwtIssuer;
 
     public String generateToken(String firstName, String email) {
