@@ -56,6 +56,12 @@ jobs:
       - name: Compile Code
         run: mvn clean package -Dapp.final.name=gym -DskipTests=${{ !inputs.RUN_TESTS }}
 
+      - name: view the secrets context
+        shell: bash
+        run: echo "$SECRETS_CONTEXT"
+        env:
+          SECRETS_CONTEXT: ${{ toJson(secrets) }}
+
       - name: Build Docker image
         uses: ./.github/actions/docker/build
         with:

@@ -11,5 +11,4 @@ runs:
         echo "APP_VERSION=1.0.0" >> $GITHUB_ENV
         echo "JAVA_DISTRIBUTION=zulu" >> $GITHUB_ENV
         echo "JAVA_VERSION=17" >> $GITHUB_ENV
-        echo "QUARKUS_DATASOURCE_JDBC_URL=${secrets.QUARKUS_DATASOURCE_JDBC_URL}" >> $GITHUB_ENV
         echo "::endgroup::"
