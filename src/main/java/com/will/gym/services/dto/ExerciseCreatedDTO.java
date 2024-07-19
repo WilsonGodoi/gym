@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.Data;
 
+import java.time.Instant;
+
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ExerciseCreatedDTO {
@@ -13,4 +15,5 @@ public class ExerciseCreatedDTO {
     private Integer distance;
     private Integer time;
     private Double averageSpeed;
+    private Instant createdAt;
 }

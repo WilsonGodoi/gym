@@ -12,6 +12,8 @@ import jakarta.validation.constraints.Email;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.time.Instant;
+
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Entity
@@ -33,4 +35,5 @@ public class Exercise extends PanacheEntityBase {
     private Integer distance;
     private Integer time;
     private Double averageSpeed;
+    private Instant createdAt;
 }

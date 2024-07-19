@@ -29,7 +29,7 @@ public class CreateExerciseService {
             exerciseRepository.persistAndFlush(exercise);
         } catch (PersistenceException ex) {
             throw new BusinessException(PERSISTENCE_ERROR.getCode(),
-                    String.format(PERSISTENCE_ERROR.getDescription()));
+                    PERSISTENCE_ERROR.getDescription());
         }
         return exerciseGroupFactory.getExerciseByGroup(createExerciseDTO.getExerciseGroupType())
                 .getExerciseCreatedDTO(exercise);
