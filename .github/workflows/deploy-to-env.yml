@@ -43,6 +43,11 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v3
 
+      - name: Copy secrets to env
+        uses: oNaiPs/secrets-to-env-action@v1
+        with:
+          secrets: ${{ toJSON(secrets) }}
+
       - name: Environment variables setup
         uses: ./.github/actions/setup/environment-variables
 
@@ -55,12 +60,6 @@ jobs:
 
       - name: Compile Code
         run: mvn clean package -Dapp.final.name=gym -DskipTests=${{ !inputs.RUN_TESTS }}
-
-      - name: view the secrets context
-        shell: bash
-        run: echo "$SECRETS_CONTEXT"
-        env:
-          SECRETS_CONTEXT: ${{ toJson(secrets) }}
 
       - name: Build Docker image
         uses: ./.github/actions/docker/build
@@ -81,7 +80,7 @@ jobs:
           public_key: ${{ secrets.UBUNTU_PUBLIC_KEY }}
 
   deploy:
-    needs: [validate-image-existence, build-package-and-docker]
+    needs: [ validate-image-existence, build-package-and-docker ]
     if: |
       always() &&
       needs.validate-image-existence.result == 'success' &&
