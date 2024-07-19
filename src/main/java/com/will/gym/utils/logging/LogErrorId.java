@@ -14,7 +14,11 @@ public enum LogErrorId {
             "Invalid user or password"),
     INVALID_EXERCISE_GROUP(
             "GYM4004",
-            "Invalid exercise group");
+            "Invalid exercise group"),
+
+    INVALID_TIME_IN_MINUTES_AND_DISTANCE_IN_METERS(
+            "GYM4005",
+            "Invalid time in minutes and distance in meters");
 
     private final String code;
 

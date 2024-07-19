@@ -15,6 +15,7 @@ public interface ExerciseCardioMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "email", ignore = true)
+    @Mapping(target = "averageSpeed", ignore = true)
     Exercise map(CreateExerciseDTO dto);
 
     ExerciseCreatedDTO map(Exercise exercise);

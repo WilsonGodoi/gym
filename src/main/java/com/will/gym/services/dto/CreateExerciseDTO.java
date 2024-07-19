@@ -1,5 +1,7 @@
 package com.will.gym.services.dto;
 
+import org.hibernate.validator.constraints.Range;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.validation.constraints.NotNull;
@@ -19,4 +21,10 @@ public class CreateExerciseDTO {
 
     @NotNull(message = "Exercise Type can't be null")
     private String exerciseType;
+
+    @Range(min = 1, message = "Invalid distance in meters")
+    private Integer distance;
+
+    @Range(min = 1, message = "Invalid time in minutes")
+    private Integer time;
 }

@@ -4,6 +4,9 @@ CREATE TABLE exercise
     email VARCHAR(255) NOT NULL,
     exerciseType VARCHAR(15) NOT NULL,
     exerciseGroupType VARCHAR(15) NOT NULL,
+    time INTEGER,
+    distance INTEGER,
+    averageSpeed DECIMAL,
     FOREIGN KEY (email) REFERENCES users (email),
     FOREIGN KEY (exerciseType) REFERENCES exercise_type (type),
     FOREIGN KEY (exerciseGroupType) REFERENCES exercise_group_type (type)

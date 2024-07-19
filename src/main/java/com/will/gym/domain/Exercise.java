@@ -1,7 +1,13 @@
 package com.will.gym.domain;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -23,4 +29,8 @@ public class Exercise extends PanacheEntityBase {
 
     @Email
     private String email;
+
+    private Integer distance;
+    private Integer time;
+    private Double averageSpeed;
 }
