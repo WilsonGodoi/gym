@@ -1,13 +1,7 @@
 package com.will.gym.domain;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -18,6 +12,8 @@ import java.time.Instant;
 @EqualsAndHashCode(callSuper = false)
 @Entity
 @Table(name = "exercise")
+@NamedQuery(name = "Exercise.getByEmail",
+        query = "FROM Exercise e WHERE e.email = :email ORDER BY e.createdAt DESC")
 public class Exercise extends PanacheEntityBase {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -39,7 +39,7 @@ public class CreateExerciseCardioGroupService implements CreateExerciseInterface
 
     private void calculateAverageSpeed(CreateExerciseDTO dto, Exercise exercise) {
         if (dto.getTime() != null && dto.getDistance() != null) {
-            Double averageSpeed = (double)dto.getDistance() / (double)dto.getTime();
+            Double averageSpeed = (double) dto.getDistance() / (double) dto.getTime();
             exercise.setAverageSpeed(averageSpeed);
         }
     }

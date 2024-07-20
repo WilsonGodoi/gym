@@ -1,14 +1,18 @@
 package com.will.gym.services;
 
 import com.will.gym.domain.Exercise;
+import com.will.gym.mappers.ExerciseMapper;
 import com.will.gym.repositories.ExerciseRepository;
 import com.will.gym.services.dto.CreateExerciseDTO;
 import com.will.gym.services.dto.ExerciseCreatedDTO;
 import com.will.gym.utils.exceptions.BusinessException;
+import io.quarkus.panache.common.Parameters;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.PersistenceException;
 import org.eclipse.microprofile.jwt.JsonWebToken;
+
+import java.util.List;
 
 import static com.will.gym.utils.logging.LogErrorId.PERSISTENCE_ERROR;
 
@@ -20,6 +24,9 @@ public class CreateExerciseService {
 
     @Inject
     ExerciseRepository exerciseRepository;
+
+    @Inject
+    ExerciseMapper mapper;
 
     public ExerciseCreatedDTO createExercise(CreateExerciseDTO createExerciseDTO, JsonWebToken jwt) {
         Exercise exercise = exerciseGroupFactory.getExerciseByGroup(createExerciseDTO.getExerciseGroupType())
@@ -33,5 +40,10 @@ public class CreateExerciseService {
         }
         return exerciseGroupFactory.getExerciseByGroup(createExerciseDTO.getExerciseGroupType())
                 .getExerciseCreatedDTO(exercise);
+    }
+
+    public List<ExerciseCreatedDTO> getExercises(JsonWebToken jwt) {
+        List<Exercise> exercises = exerciseRepository.find("#Exercise.getByEmail", Parameters.with("email", jwt.getSubject())).list();
+        return mapper.map(exercises);
     }
 }
