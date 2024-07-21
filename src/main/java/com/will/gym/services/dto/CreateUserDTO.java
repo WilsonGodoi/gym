@@ -18,6 +18,7 @@ public class CreateUserDTO {
     @NotNull(message = "Name can't be null")
     private String firstName;
     private String lastName;
+    @NotNull(message = "Email can't be null")
     @Email(message = "Email format")
     private String email;
     @NotNull(message = "Password can't be null")
