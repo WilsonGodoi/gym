@@ -23,8 +23,8 @@ public class CreateExerciseDTO {
     private String exerciseType;
 
     @Range(min = 1, message = "Invalid distance in meters")
-    private Integer distance;
+    private Integer distanceInMeters;
 
     @Range(min = 1, message = "Invalid time in minutes")
-    private Integer time;
+    private Integer timeInSeconds;
 }

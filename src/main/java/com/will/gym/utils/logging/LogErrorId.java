@@ -16,9 +16,9 @@ public enum LogErrorId {
             "GYM4004",
             "Invalid exercise group"),
 
-    INVALID_TIME_IN_MINUTES_AND_DISTANCE_IN_METERS(
+    INVALID_TIME_IN_SECONDS_AND_DISTANCE_IN_METERS(
             "GYM4005",
-            "Invalid time in minutes and distance in meters");
+            "Invalid time in seconds and distance in meters");
 
     private final String code;
 

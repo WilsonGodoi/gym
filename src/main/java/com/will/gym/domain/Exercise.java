@@ -28,8 +28,8 @@ public class Exercise extends PanacheEntityBase {
     @Email
     private String email;
 
-    private Integer distance;
-    private Integer time;
-    private Double averageSpeed;
+    private Integer distanceInMeters;
+    private Integer timeInSeconds;
+    private Double averageSpeedKmPerHour;
     private Instant createdAt;
 }
